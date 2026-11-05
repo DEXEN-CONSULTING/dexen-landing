@@ -1,4 +1,5 @@
 import Image from "next/image";
+import type { ReactNode } from "react";
 import ContactForm from "@/components/ContactForm";
 import { site } from "@/site";
 
@@ -17,13 +18,71 @@ const facts = [
   { value: "2", label: "Personas: hablas con quien lo construye" },
 ];
 
+// Marca de Dexen: engrane de 8 dientes con centro abierto. Se genera, no se dibuja a mano,
+// para que los dientes queden exactos.
+const GEAR_PATH = (() => {
+  const teeth = 8, rOut = 11, rIn = 8.4, c = 12;
+  const pts: string[] = [];
+  for (let i = 0; i < teeth; i++) {
+    const a = (i / teeth) * Math.PI * 2;
+    const step = (Math.PI * 2) / teeth;
+    const angs = [a - step * 0.32, a - step * 0.18, a + step * 0.18, a + step * 0.32];
+    const rads = [rIn, rOut, rOut, rIn];
+    angs.forEach((t, k) =>
+      pts.push(`${(c + rads[k] * Math.cos(t)).toFixed(2)} ${(c + rads[k] * Math.sin(t)).toFixed(2)}`),
+    );
+  }
+  const hole = 3.6;
+  return `M${pts.join(" L")} Z M${c + hole} ${c} A${hole} ${hole} 0 1 0 ${c - hole} ${c} A${hole} ${hole} 0 1 0 ${c + hole} ${c} Z`;
+})();
+
+function DexenMark({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+      <path d={GEAR_PATH} fill="currentColor" fillRule="evenodd" />
+    </svg>
+  );
+}
+
 // Nombres autorizados por Ricardo el 2026-11-05.
-// Daisies: solo el sitio web. Heredabienes y Melaque: sin logo en disco todavía, van como texto.
-const clients: { name: string; logo?: string; w?: number; h?: number }[] = [
+// Daisies: solo el sitio web.
+// Melaque y Heredabienes son lockup (marca + texto), igual que en sus propios sitios:
+// marca de inmobiliaria/MWRS/brand/templates/mark-ink.svg y de lidfi/heredabienes/public/iconblue.png.
+type Client = {
+  name: string;
+  logo?: string;
+  w?: number;
+  h?: number;
+  lockup?: { mark: string; w: number; h: number; markClass: string; text: ReactNode };
+};
+const clients: Client[] = [
   { name: "Daisies", logo: "/logos/daisies.png", w: 500, h: 500 },
-  { name: "Melaque West Coast" },
+  {
+    name: "Melaque West Coast",
+    lockup: {
+      mark: "/logos/melaque.svg",
+      w: 120,
+      h: 61,
+      markClass: "h-7",
+      text: (
+        <span className="flex flex-col leading-none">
+          <span className="text-[12px] font-semibold uppercase tracking-[0.07em]">Melaque West Coast</span>
+          <span className="mt-1 text-[8px] uppercase tracking-[0.34em]">Real Estate</span>
+        </span>
+      ),
+    },
+  },
   { name: "UDGA", logo: "/logos/udg.png", w: 500, h: 500 },
-  { name: "Heredabienes" },
+  {
+    name: "Heredabienes",
+    lockup: {
+      mark: "/logos/heredabienes.png",
+      w: 309,
+      h: 321,
+      markClass: "h-8",
+      text: <span className="text-[15px] font-extrabold tracking-[-0.02em]">HEREDABIENES.</span>,
+    },
+  },
   { name: "Chipsi", logo: "/logos/chipsi.svg", w: 353, h: 129 },
   { name: "Terapi", logo: "/logos/terapi.svg", w: 300, h: 110 },
   { name: "Pensión+", logo: "/logos/pensionmas.png", w: 818, h: 191 },
@@ -132,9 +191,9 @@ export default function Home() {
 
       <header className="sticky top-0 z-40 border-b border-transparent bg-paper/90 backdrop-blur supports-[backdrop-filter]:bg-paper/80">
         <div className="mx-auto flex h-16 max-w-[1200px] items-center justify-between px-4 sm:px-8">
-          <a href="#" className="flex items-baseline gap-1.5 text-[17px] no-underline">
+          <a href="#" aria-label="Dexen, inicio" className="flex items-center gap-2 text-[17px] no-underline">
+            <DexenMark className="h-[22px] w-[22px] text-blue" />
             <span className="font-semibold tracking-[-0.02em]">Dexen</span>
-            <span className="text-ink-3">/ Consulting</span>
           </a>
           <nav aria-label="Principal" className="hidden items-center gap-8 text-[14px] md:flex">
             {nav.map((n) => (
@@ -205,7 +264,12 @@ export default function Home() {
           <ul className="mt-10 flex flex-wrap items-center justify-center gap-x-10 gap-y-8 lg:flex-nowrap lg:justify-between lg:gap-x-8">
             {clients.map((c) => (
               <li key={c.name} className="flex h-12 items-center">
-                {c.logo ? (
+                {c.lockup ? (
+                  <span className="logo-mark flex items-center gap-2 whitespace-nowrap text-ink" aria-label={c.name} role="img">
+                    <Image src={c.lockup.mark} alt="" width={c.lockup.w} height={c.lockup.h} className={`${c.lockup.markClass} w-auto`} />
+                    <span aria-hidden="true">{c.lockup.text}</span>
+                  </span>
+                ) : c.logo ? (
                   <Image
                     src={c.logo}
                     alt={c.name}
@@ -360,7 +424,7 @@ export default function Home() {
       <footer className="border-t border-line">
         <div className="mx-auto flex max-w-[1200px] flex-col gap-4 px-4 py-10 text-[14px] text-ink-3 sm:flex-row sm:items-center sm:justify-between sm:px-8">
           <p>
-            <span className="font-semibold text-ink">Dexen</span> / Consulting · México
+            <span className="font-semibold text-ink">Dexen</span> · México
           </p>
           <p className="tabular">© {new Date().getFullYear()} Dexen Consulting</p>
         </div>
