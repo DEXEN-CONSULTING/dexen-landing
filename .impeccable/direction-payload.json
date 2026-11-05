@@ -1,0 +1,133 @@
+{
+  "title": "Dexen Consulting: el mundo visual",
+  "question": "El dado asignó el Tablero de tarjetas T. Puedes quedarte con él, tomar una alternativa o volver a tirar.",
+  "options": [
+    {
+      "id": "assigned",
+      "label": "Tablero de tarjetas T",
+      "kicker": "THE ROLL",
+      "lineage": "tableros de planeación de planta con tarjetas T en ranuras",
+      "thesis": "Cada servicio es una tarjeta en el tablero de planta, y el valor está en que se queda en la columna Operando.",
+      "palette": ["#1E3F66", "#FAFAF7", "#F2C230", "#2F8F4E", "#D2392B", "#15191C"],
+      "materials": ["panel ranurado de lámina esmaltada", "tarjetas T de cartulina con folio", "etiquetas de rotulador"],
+      "viewport": "Un tablero azul esmaltado a todo el ancho. Las filas son las 4 líneas de servicio y las columnas van de Diagnóstico a Operando. Las tarjetas avanzan, el titular va a la izquierda y el botón 'Pedir diagnóstico' es una tarjeta amarilla en su ranura.",
+      "risk": "Si la tipografía y el rótulo salen tímidos, se lee como un kanban de software.",
+      "raised": [
+        {"from": "challenger-seedbed", "raise": "El azul del tablero ocupa todo el primer viewport; no hay fondo neutro alrededor."},
+        {"from": "challenger-menagerie", "raise": "El verde se reserva solo para lo que está operando ahora; ningún otro elemento lo usa."},
+        {"from": "challenger-darkroom", "raise": "El proceso marca sus puntos sin retorno: diagnóstico antes de cotizar y nada en producción sin staging."},
+        {"from": "challenger-orizuru", "raise": "Los pasos del proceso van numerados en una columna de margen estricta, del 1 al 6."}
+      ],
+      "comp": ".impeccable/mocks/decision/assigned.webp"
+    },
+    {
+      "id": "model-pick",
+      "label": "Sala de monitoreo",
+      "kicker": "IMPECCABLE’S PICK",
+      "lineage": "salas de control y tableros de estado de sistemas",
+      "thesis": "Dexen enseña sus sistemas corriendo: luces de estado, uptime y la última acción del bot.",
+      "palette": ["#0E1417", "#E9EEF0", "#3DDC84", "#F5A524"],
+      "materials": ["paneles de instrumento", "dígitos tabulares", "luces piloto"],
+      "viewport": "Una consola con 4 paneles, uno por línea de servicio, cada uno con su estado vivo (sintético y etiquetado) y el titular encima.",
+      "risk": "Es a donde llegan casi todas las agencias de IA; dark + verde neón es el rut de la categoría.",
+      "comp": ".impeccable/mocks/decision/model-pick.webp"
+    },
+    {
+      "id": "challenger-gateboard",
+      "label": "Pase de abordar y tablero de salidas",
+      "verdict": "competitive",
+      "lineage": "pases de abordar y tableros de puerta",
+      "thesis": "Cada proyecto es un vuelo en el tablero y cambia de estado en su sitio, sin desaparecer.",
+      "palette": ["#111111", "#F4F4F0", "#FFB000"],
+      "materials": ["paneles de alto contraste", "bloque escaneable", "cifras tabulares"],
+      "viewport": "Un tablero de salidas con los servicios como filas y el formulario como pase de abordar segmentado.",
+      "case": "Se fusiona limpio y el estado vivo comunica operación continua. Pierde en identificación: un director de operaciones no se ve como pasajero.",
+      "risk": "Si la retícula no es estricta se lee como novedad retro.",
+      "comp": ".impeccable/mocks/decision/challenger-gateboard.webp",
+      "hero": "https://impeccable.style/worlds/cards/vernacular-ephemera-boarding-pass-and-gate-board-hero.webp"
+    },
+    {
+      "id": "challenger-seedbed",
+      "label": "Campo verde con cápsulas",
+      "verdict": "declined",
+      "lineage": "SaaS de cápsulas flotantes",
+      "thesis": "Un color se adueña del viewport y la interfaz flota encima en forma de pastillas.",
+      "palette": ["#82CC5C", "#2F3130", "#F2EFE3"],
+      "materials": ["cápsulas blancas", "paneles redondeados"],
+      "viewport": "Un campo verde con un titular grotesco y una barra en cápsula.",
+      "case": "Pierde en los dos ejes: es genérico de startup y no dice nada de implementación ni de operación.",
+      "kept": "Compromiso total de un color con el primer viewport.",
+      "risk": "Indistinguible de cualquier SaaS.",
+      "hero": "https://impeccable.style/worlds/cards/sd-seedbed-lobes-hero.webp"
+    },
+    {
+      "id": "challenger-darkroom",
+      "label": "Cuarto oscuro",
+      "verdict": "declined",
+      "lineage": "laboratorio fotográfico con luz de seguridad",
+      "thesis": "Estaciones fijas en orden y puntos irreversibles.",
+      "palette": ["#C8641E", "#1A1A1A", "#EDEDE8"],
+      "materials": ["luz ámbar", "tiras de prueba"],
+      "viewport": "Estaciones del proceso bajo luz ámbar.",
+      "case": "El proceso por estaciones encaja, pero el cuarto oscuro no le habla ni a la pyme ni al comité.",
+      "kept": "Puntos sin retorno marcados en el proceso.",
+      "risk": "Es demasiado atmosférico para venta B2B.",
+      "hero": "https://impeccable.style/worlds/cards/signals-instruments-darkroom-safelight-bay-hero.webp"
+    },
+    {
+      "id": "challenger-menagerie",
+      "label": "Autómatas de papel",
+      "verdict": "declined",
+      "lineage": "esculturas cinéticas de manivela",
+      "thesis": "Una manivela mueve un desfile de figuras.",
+      "palette": ["#FFFFFF", "#B7A27E", "#B3202A"],
+      "materials": ["papel cortado", "kraft"],
+      "viewport": "Un desfile de figuras de papel.",
+      "case": "Es encantador, pero lo artesanal contradice el mensaje de que el sistema opera solo.",
+      "kept": "Un color reservado solo para lo que está en movimiento.",
+      "risk": "Se lee como juguete.",
+      "hero": "https://impeccable.style/worlds/cards/kinetic-sculpture-automata-crank-paper-menagerie-hero.webp"
+    },
+    {
+      "id": "challenger-orizuru",
+      "label": "Grulla de papel en 32 pliegues",
+      "verdict": "declined",
+      "lineage": "secuencias de origami",
+      "thesis": "Una hoja que pasa de plana a grulla paso a paso.",
+      "palette": ["#C8102E", "#F5EFE6", "#1A1A1A"],
+      "materials": ["washi", "pliegues"],
+      "viewport": "Un cuadrado bermellón con sus pasos de doblado.",
+      "case": "No tiene relación con la operación de una empresa mexicana.",
+      "kept": "Pasos numerados en una columna de margen estricta.",
+      "risk": "Es puro ornamento.",
+      "hero": "https://impeccable.style/worlds/cards/paper-folds-pleats-deployable-orizuru-crane-sequence-hero.webp"
+    },
+    {
+      "id": "challenger-ebru",
+      "label": "Ebru (pigmento flotado)",
+      "verdict": "declined",
+      "lineage": "papel marmoleado turco",
+      "thesis": "Una sola superficie donde cada gota desplaza a la anterior.",
+      "palette": ["#1D4E89", "#E8B04B", "#F2EDE4"],
+      "materials": ["pigmento sobre agua", "papel"],
+      "viewport": "Un baño de color con figuras peinadas.",
+      "case": "No comunica ni servicio ni prueba.",
+      "kept": "Una superficie continua, sin saltos entre secciones en el primer viewport.",
+      "risk": "Es abstracto.",
+      "hero": "https://impeccable.style/worlds/cards/medium-native-ebru-floated-pigment-hero.webp"
+    }
+  ],
+  "reroll": {"registers": ["safer", "bolder"]},
+  "buildPath": {"value": "code"},
+  "canon": true,
+  "canonCard": {
+    "label": "El estándar de la categoría",
+    "thesis": "Una landing de consultora de automatización como las de la competencia, bien ejecutada.",
+    "palette": ["#FFFFFF", "#0F172A", "#2563EB"],
+    "materials": ["retícula limpia", "capturas de producto"],
+    "viewport": "Titular, CTA, banda de logos, tres tarjetas de servicio y formulario.",
+    "risk": "Es indistinguible de la competencia por diseño.",
+    "comp": ".impeccable/mocks/decision/canon.webp"
+  },
+  "steer": true
+}
