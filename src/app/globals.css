@@ -65,18 +65,30 @@ h1, h2, h3 {
 }
 
 /* Panel del hero: vidrio acanalado sobre bloques azules escalonados */
+@property --px { syntax: "<number>"; inherits: true; initial-value: 0.5; }
+@property --py { syntax: "<number>"; inherits: true; initial-value: 0.5; }
 .ribbed {
+  --px: 0.5;
+  --py: 0.5;
+  --hover: 0;
+  transition: --px 0.7s cubic-bezier(0.16, 1, 0.3, 1), --py 0.7s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
   overflow: hidden;
+  container-type: size;
   background: linear-gradient(180deg, #f3f5fb 0%, #e9eefc 100%);
   isolation: isolate;
 }
 .ribbed .step {
   position: absolute;
-  right: 0;
-  bottom: 0;
+  /* Sobra fuera del panel para que el paralaje nunca destape el borde */
+  right: -40px;
+  bottom: -24px;
   transform-origin: 100% 100%;
-  animation: rise 1.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+  /* Paralaje: los bloques más profundos se mueven más contra el cursor */
+  translate: calc((0.5 - var(--px)) * var(--depth, 1) * 7px) calc((0.5 - var(--py)) * var(--depth, 1) * 4px);
+  animation:
+    rise 1.6s cubic-bezier(0.16, 1, 0.3, 1) both,
+    breathe 7s ease-in-out 1.6s infinite alternate;
 }
 .ribbed .glass {
   position: absolute;
@@ -112,8 +124,49 @@ h1, h2, h3 {
   z-index: 1;
   height: 10px;
   background: var(--blue-ink);
+  left: 0;
   filter: blur(3px);
   opacity: 0.85;
+  animation: flow var(--dur, 10s) linear var(--delay, 0s) infinite;
+}
+/* Luz detrás del vidrio que sigue al cursor; el acanalado la refracta en franjas */
+.ribbed .spot {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  opacity: 0;
+  background:
+    radial-gradient(ellipse 22% 17% at calc(var(--px) * 100%) calc(var(--py) * 100%), rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0) 100%),
+    radial-gradient(ellipse 44% 34% at calc(var(--px) * 100%) calc(var(--py) * 100%), rgba(29, 79, 240, 0.28), rgba(29, 79, 240, 0.1) 55%, transparent 100%);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.ribbed:hover .spot { opacity: 1; }
+.ribbed:hover .lines { opacity: 0.6; }
+.ribbed .lines { transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+
+/* Destello que cruza el vidrio cada tanto */
+.ribbed .glass::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 40%, rgba(255, 255, 255, 0.45) 50%, transparent 60%);
+  translate: -100% 0;
+  animation: sheen 9s cubic-bezier(0.65, 0, 0.35, 1) 2s infinite;
+}
+
+/* Los bloques suben y bajan como carga de trabajo; las barras cruzan como tareas en curso */
+@keyframes breathe {
+  0% { scale: 1 1; }
+  50% { scale: 1 0.9; }
+  100% { scale: 1 1.04; }
+}
+@keyframes flow {
+  from { translate: -100% 0; }
+  to { translate: 100cqw 0; }
+}
+@keyframes sheen {
+  0%, 70% { translate: -100% 0; }
+  100% { translate: 100% 0; }
 }
 
 @keyframes rise {
@@ -129,7 +182,8 @@ h1, h2, h3 {
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .ribbed .step { animation: none; }
+  .ribbed .step, .ribbed .bar, .ribbed .glass::after { animation: none; }
+  .ribbed .step { translate: none; }
 }
 
 .logo-mark {
@@ -139,4 +193,30 @@ h1, h2, h3 {
 }
 .logo-mark:hover {
   opacity: 0.9;
+}
+
+/* Fondo de engranes (GearBackdrop): siempre visible, tenue, se desvanece hacia los bordes */
+.gear-field {
+  color: var(--blue);
+  fill-opacity: 0.09;
+  mask-image: radial-gradient(ellipse 75% 85% at 50% 50%, #000 30%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 75% 85% at 50% 50%, #000 30%, transparent 100%);
+}
+
+/* Banda de clientes en móvil: dos copias de la lista que se desplazan sin corte */
+.marquee {
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.marquee-track {
+  animation: marquee 32s linear infinite;
+}
+@keyframes marquee {
+  to {
+    transform: translateX(-100%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee { overflow-x: auto; }
+  .marquee-track { animation: none; }
 }

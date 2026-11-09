@@ -1,6 +1,10 @@
 import Image from "next/image";
 import type { ReactNode } from "react";
 import ContactForm from "@/components/ContactForm";
+import GearBackdrop from "@/components/GearBackdrop";
+import HeroPanel from "@/components/HeroPanel";
+import ProcessSteps from "@/components/ProcessSteps";
+import { GEAR_PATH } from "@/components/gear";
 import { site } from "@/site";
 
 const nav = [
@@ -9,32 +13,6 @@ const nav = [
   { href: "#paquetes", label: "Paquetes" },
   { href: "#equipo", label: "Equipo" },
 ];
-
-// Todo dato sale de PRODUCT.md §Operating Context / Capabilities. Nada inventado.
-const facts = [
-  { value: "30 min", label: "Llamada de diagnóstico, sin costo" },
-  { value: "72 h", label: "Para tener la propuesta por escrito" },
-  { value: "4", label: "Líneas de servicio, todas ya en producción" },
-  { value: "2", label: "Personas: hablas con quien lo construye" },
-];
-
-// Marca de Dexen: engrane de 8 dientes con centro abierto. Se genera, no se dibuja a mano,
-// para que los dientes queden exactos.
-const GEAR_PATH = (() => {
-  const teeth = 8, rOut = 11, rIn = 8.4, c = 12;
-  const pts: string[] = [];
-  for (let i = 0; i < teeth; i++) {
-    const a = (i / teeth) * Math.PI * 2;
-    const step = (Math.PI * 2) / teeth;
-    const angs = [a - step * 0.32, a - step * 0.18, a + step * 0.18, a + step * 0.32];
-    const rads = [rIn, rOut, rOut, rIn];
-    angs.forEach((t, k) =>
-      pts.push(`${(c + rads[k] * Math.cos(t)).toFixed(2)} ${(c + rads[k] * Math.sin(t)).toFixed(2)}`),
-    );
-  }
-  const hole = 3.6;
-  return `M${pts.join(" L")} Z M${c + hole} ${c} A${hole} ${hole} 0 1 0 ${c - hole} ${c} A${hole} ${hole} 0 1 0 ${c + hole} ${c} Z`;
-})();
 
 function DexenMark({ className }: { className?: string }) {
   return (
@@ -46,46 +24,58 @@ function DexenMark({ className }: { className?: string }) {
 
 // Nombres autorizados por Ricardo el 2026-11-05.
 // Daisies: solo el sitio web.
-// Melaque y Heredabienes son lockup (marca + texto), igual que en sus propios sitios:
+// Melaque, Heredabienes y Daisies son lockup (marca + texto), igual que en sus propios sitios:
 // marca de inmobiliaria/MWRS/brand/templates/mark-ink.svg y de lidfi/heredabienes/public/iconblue.png.
+// Balance óptico: cada logo lleva su alto visible en px (los PNG -trim no traen margen),
+// más bajo cuanto más ancho, para que todos pesen parecido en la banda.
 type Client = {
   name: string;
-  logo?: string;
-  w?: number;
-  h?: number;
-  lockup?: { mark: string; w: number; h: number; markClass: string; text: ReactNode };
+  logo?: { src: string; w: number; h: number; height: number };
+  lockup?: { mark: string; w: number; h: number; height: number; gap: number; text: ReactNode };
 };
 const clients: Client[] = [
-  { name: "Daisies", logo: "/logos/daisies.png", w: 500, h: 500 },
+  {
+    name: "Daisies",
+    lockup: {
+      mark: "/logos/daisies-trim.png",
+      w: 276,
+      h: 276,
+      height: 28,
+      gap: 7,
+      text: <span className="text-[25px] font-semibold leading-none tracking-[-0.035em]">daisies</span>,
+    },
+  },
   {
     name: "Melaque West Coast",
     lockup: {
       mark: "/logos/melaque.svg",
       w: 120,
       h: 61,
-      markClass: "h-7",
+      height: 30,
+      gap: 8,
       text: (
         <span className="flex flex-col leading-none">
-          <span className="text-[12px] font-semibold uppercase tracking-[0.07em]">Melaque West Coast</span>
+          <span className="text-[13px] font-semibold uppercase tracking-[0.07em]">Melaque West Coast</span>
           <span className="mt-1 text-[8px] uppercase tracking-[0.34em]">Real Estate</span>
         </span>
       ),
     },
   },
-  { name: "UDGA", logo: "/logos/udg.png", w: 500, h: 500 },
+  { name: "UDGA", logo: { src: "/logos/udg-trim.png", w: 302, h: 210, height: 40 } },
   {
     name: "Heredabienes",
     lockup: {
-      mark: "/logos/heredabienes.png",
-      w: 309,
-      h: 321,
-      markClass: "h-8",
-      text: <span className="text-[15px] font-extrabold tracking-[-0.02em]">HEREDABIENES.</span>,
+      mark: "/logos/heredabienes-trim.png",
+      w: 202,
+      h: 243,
+      height: 28,
+      gap: 7,
+      text: <span className="text-[16px] font-extrabold tracking-[-0.02em]">HEREDABIENES.</span>,
     },
   },
-  { name: "Chipsi", logo: "/logos/chipsi.svg", w: 353, h: 129 },
-  { name: "Terapi", logo: "/logos/terapi.svg", w: 300, h: 110 },
-  { name: "Pensión+", logo: "/logos/pensionmas.png", w: 818, h: 191 },
+  { name: "Chipsi", logo: { src: "/logos/chipsi.svg", w: 353, h: 129, height: 27 } },
+  { name: "Terapi", logo: { src: "/logos/terapi.svg", w: 336, h: 96, height: 24 } },
+  { name: "Pensión+", logo: { src: "/logos/pensionmas.png", w: 818, h: 191, height: 29 } },
 ];
 
 const services = [
@@ -109,15 +99,6 @@ const services = [
     body: "Identidad y sistema de diseño para que todo lo anterior se vea como una sola empresa.",
     limit: null,
   },
-];
-
-const steps = [
-  { t: "Llamada de diagnóstico", d: "30 minutos, sin costo. Nos cuentas el problema; nosotros preguntamos." },
-  { t: "Calificación", d: "Revisamos si el proyecto encaja con lo que hacemos. Si no, te lo decimos." },
-  { t: "Propuesta en 72 h", d: "Problema, solución, alcance, precio, tiempos y lo que no incluye." },
-  { t: "Validación técnica", d: "El técnico que lo va a construir revisa la propuesta antes de enviártela." },
-  { t: "Cierre", d: "Contrato y 50% del setup para arrancar." },
-  { t: "Kickoff", d: "Con un responsable de tu lado nombrado por escrito." },
 ];
 
 const packages = [
@@ -156,32 +137,6 @@ function Arrow() {
   );
 }
 
-function HeroPanel() {
-  const steps = [
-    { w: "70%", h: "74%", c: "#c9d6fb", d: "0s" },
-    { w: "56%", h: "62%", c: "#8faaf6", d: ".12s" },
-    { w: "44%", h: "50%", c: "#5379ee", d: ".24s" },
-    { w: "32%", h: "38%", c: "#2a55e6", d: ".36s" },
-    { w: "20%", h: "26%", c: "#1238c4", d: ".48s" },
-  ];
-  return (
-    <div aria-hidden className="ribbed aspect-[4/5] w-full rounded-md sm:aspect-[5/5] lg:aspect-[4/4.2]">
-      {steps.map((s, i) => (
-        <div
-          key={i}
-          className="step"
-          style={{ width: s.w, height: s.h, background: s.c, animationDelay: s.d }}
-        />
-      ))}
-      <div className="bar" style={{ left: "0%", width: "38%", top: "54%" }} />
-      <div className="bar" style={{ left: "22%", width: "30%", top: "68%" }} />
-      <div className="bar" style={{ left: "44%", width: "24%", top: "80%" }} />
-      <div className="glass" />
-      <div className="lines" />
-    </div>
-  );
-}
-
 export default function Home() {
   return (
     <>
@@ -191,8 +146,8 @@ export default function Home() {
 
       <header className="sticky top-0 z-40 border-b border-transparent bg-paper/90 backdrop-blur supports-[backdrop-filter]:bg-paper/80">
         <div className="mx-auto flex h-16 max-w-[1200px] items-center justify-between px-4 sm:px-8">
-          <a href="#" aria-label="Dexen, inicio" className="flex items-center gap-2 text-[17px] no-underline">
-            <DexenMark className="h-[22px] w-[22px] text-blue" />
+          <a href="#" aria-label="Dexen, inicio" className="flex items-center gap-2.5 text-[24px] no-underline">
+            <DexenMark className="h-[28px] w-[28px] text-blue" />
             <span className="font-semibold tracking-[-0.02em]">Dexen</span>
           </a>
           <nav aria-label="Principal" className="hidden items-center gap-8 text-[14px] md:flex">
@@ -212,77 +167,124 @@ export default function Home() {
       </header>
 
       <main id="contenido">
-        {/* Hero */}
-        <section className="mx-auto grid max-w-[1200px] gap-10 px-4 pb-16 pt-12 sm:px-8 md:pt-20 lg:grid-cols-[1.05fr_1fr] lg:gap-16 lg:pb-24">
-          <div className="flex flex-col">
+        {/* Hero + clientes: los logos cierran el primer viewport */}
+        <section className="mx-auto grid max-w-[1200px] gap-8 px-4 pt-8 sm:px-8 md:pt-14 lg:min-h-[calc(100svh-4rem)] lg:grid-cols-[1.05fr_1fr] lg:grid-rows-[1fr_auto] lg:gap-x-16 lg:gap-y-0 lg:pt-10">
+          <div className="flex flex-col lg:justify-center">
             <h1 className="text-[clamp(2.6rem,6.2vw,4.9rem)] font-light leading-[1.02] tracking-[-0.035em]">
               Sistemas que operan solos en tu empresa
             </h1>
-            <div className="mt-10 lg:mt-auto lg:pt-16">
-              <p className="max-w-[36ch] text-[19px] leading-[1.45] text-ink-2">
+            <div className="mt-6 lg:mt-8">
+              <p className="max-w-[36ch] text-[18px] leading-[1.45] text-ink-2 sm:text-[19px]">
                 Instalamos agentes de IA, contenido automático, software y ERP. Después los mantenemos corriendo y respondemos cuando algo se rompe.
               </p>
-              <div className="mt-8 flex flex-wrap gap-3">
+              <div className="mt-7 flex flex-wrap gap-3">
                 <a
                   href="#contacto"
-                  className="inline-flex min-w-[11rem] items-center justify-center gap-2 bg-blue px-6 py-3.5 text-[15px] font-medium text-white no-underline transition-colors hover:bg-blue-deep"
+                  className="inline-flex min-w-[10rem] flex-1 items-center justify-center gap-2 bg-blue px-6 py-3.5 text-[15px] font-medium text-white no-underline transition-colors hover:bg-blue-deep sm:flex-none"
                 >
                   Pedir diagnóstico <Arrow />
                 </a>
                 <a
                   href="#proceso"
-                  className="inline-flex min-w-[11rem] items-center justify-center border border-blue/40 px-6 py-3.5 text-[15px] font-medium text-blue no-underline transition-colors hover:border-blue hover:bg-blue/[0.04]"
+                  className="inline-flex min-w-[10rem] flex-1 items-center justify-center border border-blue/40 px-6 py-3.5 text-[15px] font-medium text-blue no-underline transition-colors hover:border-blue hover:bg-blue/[0.04] sm:flex-none"
                 >
                   Cómo trabajamos
                 </a>
               </div>
             </div>
           </div>
-          <HeroPanel />
-        </section>
 
-        {/* Datos del proceso */}
-        <section aria-label="Cómo es trabajar con Dexen" className="border-y border-line">
-          <dl className="mx-auto grid max-w-[1200px] grid-cols-2 gap-y-10 px-4 py-14 sm:px-8 md:grid-cols-4 md:py-20">
-            {facts.map((f) => (
-              <div key={f.value} className="pr-4 text-center md:px-6">
-                <dt className="sr-only">{f.label}</dt>
-                <dd className="tabular text-[clamp(2.4rem,4.6vw,3.6rem)] font-light leading-none tracking-[-0.03em]">
-                  {f.value}
-                </dd>
-                <dd className="mx-auto mt-3 max-w-[18ch] text-[15px] leading-snug text-ink-2">{f.label}</dd>
-              </div>
-            ))}
-          </dl>
-        </section>
+          <div aria-labelledby="clientes" role="region" className="order-2 min-w-0 lg:order-3 lg:col-span-2 lg:mt-6 lg:py-5">
+            <h2 id="clientes" className="text-[14px] text-ink-3 lg:text-center">
+              Han trabajado con Dexen
+            </h2>
+            {/* Móvil y tablet: una sola fila en movimiento. */}
+            <div className="marquee -mx-4 mt-3 flex overflow-hidden sm:-mx-8 lg:hidden">
+              <ul className="marquee-track flex w-max shrink-0 items-center gap-x-10 px-4">
+                {clients.map((c) => (
+                    <li key={c.name} className="flex h-12 shrink-0 items-center">
+                      {c.lockup ? (
+                        <span
+                          className="logo-mark flex items-center whitespace-nowrap text-ink"
+                          style={{ gap: c.lockup.gap }}
+                          aria-label={c.name}
+                          role="img"
+                        >
+                          <Image src={c.lockup.mark} alt="" width={c.lockup.w} height={c.lockup.h} style={{ height: c.lockup.height }} className="w-auto" />
+                          <span aria-hidden="true">{c.lockup.text}</span>
+                        </span>
+                      ) : c.logo ? (
+                        <Image
+                          src={c.logo.src}
+                          alt={c.name}
+                          width={c.logo.w}
+                          height={c.logo.h}
+                          style={{ height: c.logo.height }}
+                          className="logo-mark w-auto"
+                        />
+                      ) : null}
+                    </li>
+                  ))}
+              </ul>
+              <ul aria-hidden="true" className="marquee-track flex w-max shrink-0 items-center gap-x-10 px-4">
+                {clients.map((c) => (
+                    <li key={c.name} className="flex h-12 shrink-0 items-center">
+                      {c.lockup ? (
+                        <span
+                          className="logo-mark flex items-center whitespace-nowrap text-ink"
+                          style={{ gap: c.lockup.gap }}
+                          aria-label={c.name}
+                          role="img"
+                        >
+                          <Image src={c.lockup.mark} alt="" width={c.lockup.w} height={c.lockup.h} style={{ height: c.lockup.height }} className="w-auto" />
+                          <span aria-hidden="true">{c.lockup.text}</span>
+                        </span>
+                      ) : c.logo ? (
+                        <Image
+                          src={c.logo.src}
+                          alt={c.name}
+                          width={c.logo.w}
+                          height={c.logo.h}
+                          style={{ height: c.logo.height }}
+                          className="logo-mark w-auto"
+                        />
+                      ) : null}
+                    </li>
+                  ))}
+              </ul>
+            </div>
+            {/* Escritorio: fila estática. */}
+            <ul className="mt-5 hidden items-center justify-between gap-x-8 lg:flex">
+              {clients.map((c) => (
+                    <li key={c.name} className="flex h-12 shrink-0 items-center">
+                      {c.lockup ? (
+                        <span
+                          className="logo-mark flex items-center whitespace-nowrap text-ink"
+                          style={{ gap: c.lockup.gap }}
+                          aria-label={c.name}
+                          role="img"
+                        >
+                          <Image src={c.lockup.mark} alt="" width={c.lockup.w} height={c.lockup.h} style={{ height: c.lockup.height }} className="w-auto" />
+                          <span aria-hidden="true">{c.lockup.text}</span>
+                        </span>
+                      ) : c.logo ? (
+                        <Image
+                          src={c.logo.src}
+                          alt={c.name}
+                          width={c.logo.w}
+                          height={c.logo.h}
+                          style={{ height: c.logo.height }}
+                          className="logo-mark w-auto"
+                        />
+                      ) : null}
+                    </li>
+                  ))}
+            </ul>
+          </div>
 
-        {/* Logos */}
-        <section aria-labelledby="clientes" className="mx-auto max-w-[1200px] px-4 py-16 sm:px-8 md:py-20">
-          <h2 id="clientes" className="text-center text-[15px] text-ink-3">
-            Han trabajado con Dexen
-          </h2>
-          <ul className="mt-10 flex flex-wrap items-center justify-center gap-x-10 gap-y-8 lg:flex-nowrap lg:justify-between lg:gap-x-8">
-            {clients.map((c) => (
-              <li key={c.name} className="flex h-12 items-center">
-                {c.lockup ? (
-                  <span className="logo-mark flex items-center gap-2 whitespace-nowrap text-ink" aria-label={c.name} role="img">
-                    <Image src={c.lockup.mark} alt="" width={c.lockup.w} height={c.lockup.h} className={`${c.lockup.markClass} w-auto`} />
-                    <span aria-hidden="true">{c.lockup.text}</span>
-                  </span>
-                ) : c.logo ? (
-                  <Image
-                    src={c.logo}
-                    alt={c.name}
-                    width={c.w}
-                    height={c.h}
-                    className={`logo-mark h-full w-auto max-w-[130px] object-contain ${c.w === c.h ? "scale-[1.6]" : ""}`}
-                  />
-                ) : (
-                  <span className="logo-mark text-[19px] font-semibold tracking-[-0.02em] text-ink">{c.name}</span>
-                )}
-              </li>
-            ))}
-          </ul>
+          <div className="order-3 pb-12 lg:order-2 lg:pb-0">
+            <HeroPanel />
+          </div>
         </section>
 
         {/* Servicios */}
@@ -311,7 +313,7 @@ export default function Home() {
         </section>
 
         {/* Proceso */}
-        <section id="proceso" aria-labelledby="proceso-t" className="mx-auto max-w-[1200px] px-4 py-20 sm:px-8 md:py-28">
+        <ProcessSteps>
           <div className="grid gap-6 md:grid-cols-[1fr_1.4fr] md:gap-16">
             <h2 id="proceso-t" className="text-[clamp(2rem,4vw,3.2rem)] font-light leading-[1.05] tracking-[-0.03em]">
               Cómo trabajamos
@@ -320,16 +322,7 @@ export default function Home() {
               Primero el diagnóstico. Sin entender el problema no hay cotización.
             </p>
           </div>
-          <ol className="mt-14 grid gap-px overflow-hidden border border-line bg-line sm:grid-cols-2 lg:grid-cols-3">
-            {steps.map((s, i) => (
-              <li key={s.t} className="bg-paper p-7 md:p-9">
-                <span className="tabular text-[15px] text-blue">{i + 1}</span>
-                <h3 className="mt-6 text-[21px] font-normal tracking-[-0.015em]">{s.t}</h3>
-                <p className="mt-2 text-[16px] leading-relaxed text-ink-2">{s.d}</p>
-              </li>
-            ))}
-          </ol>
-        </section>
+        </ProcessSteps>
 
         {/* Paquetes */}
         <section id="paquetes" aria-labelledby="paquetes-t" className="bg-blue-ink text-white">
@@ -399,6 +392,7 @@ export default function Home() {
 
         {/* Contacto */}
         <section id="contacto" aria-labelledby="contacto-t" className="border-t border-line bg-paper-2">
+          <GearBackdrop>
           <div className="mx-auto grid max-w-[1200px] gap-12 px-4 py-20 sm:px-8 md:py-28 lg:grid-cols-[1fr_1.2fr] lg:gap-20">
             <div>
               <h2 id="contacto-t" className="text-[clamp(2.2rem,4.6vw,3.6rem)] font-light leading-[1.03] tracking-[-0.035em]">
@@ -418,6 +412,7 @@ export default function Home() {
             </div>
             <ContactForm />
           </div>
+          </GearBackdrop>
         </section>
       </main>
 
