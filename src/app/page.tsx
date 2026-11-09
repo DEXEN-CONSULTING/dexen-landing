@@ -4,23 +4,10 @@ import ContactForm from "@/components/ContactForm";
 import GearBackdrop from "@/components/GearBackdrop";
 import HeroPanel from "@/components/HeroPanel";
 import ProcessSteps from "@/components/ProcessSteps";
-import { GEAR_PATH } from "@/components/gear";
+import IntelDashboard from "@/components/IntelDashboard";
+import ServiceVisual, { type ServiceKind } from "@/components/ServiceVisual";
+import { SiteFooter, SiteHeader } from "@/components/SiteChrome";
 import { site } from "@/site";
-
-const nav = [
-  { href: "#servicios", label: "Servicios" },
-  { href: "#proceso", label: "Proceso" },
-  { href: "#paquetes", label: "Paquetes" },
-  { href: "#equipo", label: "Equipo" },
-];
-
-function DexenMark({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
-      <path d={GEAR_PATH} fill="currentColor" fillRule="evenodd" />
-    </svg>
-  );
-}
 
 // Nombres autorizados por Ricardo el 2026-11-05.
 // Daisies: solo el sitio web.
@@ -78,47 +65,30 @@ const clients: Client[] = [
   { name: "Pensión+", logo: { src: "/logos/pensionmas.png", w: 818, h: 191, height: 29 } },
 ];
 
-const services = [
+const services: { title: string; body: string; limit: string | null; kind: ServiceKind }[] = [
   {
     title: "Contenido automático",
+    kind: "contenido",
     body: "Publicación en redes y blog que sale todos los días sin que nadie de tu equipo la empuje.",
     limit: null,
   },
   {
     title: "Agentes de IA y automatización",
+    kind: "agentes",
     body: "IA que contesta, agenda, cotiza y da seguimiento por WhatsApp, Instagram, web, voz y correo.",
     limit: "No cierra ventas complejas ni sustituye a tu vendedor: filtra, responde lo repetitivo y te entrega el lead caliente.",
   },
   {
     title: "Software, web y ERP",
+    kind: "erp",
     body: "Sitios, portales, apps e implementación de Odoo por fases, con soporte después de salir a producción.",
     limit: "Nunca cotizamos un ERP sin diagnóstico previo.",
   },
   {
     title: "Marca y desarrollo creativo",
+    kind: "marca",
     body: "Identidad y sistema de diseño para que todo lo anterior se vea como una sola empresa.",
     limit: null,
-  },
-];
-
-const packages = [
-  {
-    name: "Arranque",
-    who: "Decide el dueño, en una reunión.",
-    pitch: "Dejas de perder los mensajes que no contestas y publicas todos los días sin contratar a nadie.",
-    cycle: "1 a 2 semanas",
-  },
-  {
-    name: "Crecimiento",
-    who: "Dueño y responsable de marketing.",
-    pitch: "Costo por lead y tiempo de respuesta medidos, contra lo que hoy no se mide.",
-    cycle: "3 a 6 semanas",
-  },
-  {
-    name: "Empresa",
-    who: "Comité, con el área de sistemas involucrada.",
-    pitch: "Ahorro de horas-persona medido y trazabilidad de procesos.",
-    cycle: "2 a 6 meses",
   },
 ];
 
@@ -144,27 +114,7 @@ export default function Home() {
         Saltar al contenido
       </a>
 
-      <header className="sticky top-0 z-40 border-b border-transparent bg-paper/90 backdrop-blur supports-[backdrop-filter]:bg-paper/80">
-        <div className="mx-auto flex h-16 max-w-[1200px] items-center justify-between px-4 sm:px-8">
-          <a href="#" aria-label="Dexen, inicio" className="flex items-center gap-2.5 text-[24px] no-underline">
-            <DexenMark className="h-[28px] w-[28px] text-blue" />
-            <span className="font-semibold tracking-[-0.02em]">Dexen</span>
-          </a>
-          <nav aria-label="Principal" className="hidden items-center gap-8 text-[14px] md:flex">
-            {nav.map((n) => (
-              <a key={n.href} href={n.href} className="text-ink-2 no-underline transition-colors hover:text-ink">
-                {n.label}
-              </a>
-            ))}
-          </nav>
-          <a
-            href="#contacto"
-            className="border border-ink px-4 py-2 text-[14px] font-medium no-underline transition-colors hover:bg-ink hover:text-paper"
-          >
-            Pedir diagnóstico
-          </a>
-        </div>
-      </header>
+<SiteHeader />
 
       <main id="contenido">
         {/* Hero + clientes: los logos cierran el primer viewport */}
@@ -287,6 +237,26 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Inteligencia: dashboard ilustrativo */}
+        <section id="inteligencia" aria-labelledby="inteligencia-t" className="dash-glow overflow-hidden text-white">
+          <div className="mx-auto max-w-[1200px] px-4 py-20 sm:px-8 md:py-28">
+            <div className="grid gap-6 md:grid-cols-[1fr_1.4fr] md:gap-16">
+              <h2 id="inteligencia-t" className="text-[clamp(2rem,4vw,3.2rem)] font-light leading-[1.05] tracking-[-0.03em]">
+                Tu operación, medida y corriendo sola
+              </h2>
+              <div className="md:pt-3">
+                <p className="max-w-[52ch] text-[18px] leading-relaxed text-[#c3cdf5]">
+                  Cada agente, publicación y documento deja rastro. Lo juntamos en un tablero que te dice qué pasó, qué se atendió solo y dónde conviene moverte.
+                </p>
+                <p className="mt-3 text-[13px] text-[#8ea0e6]">Ejemplo ilustrativo con datos simulados.</p>
+              </div>
+            </div>
+            <div className="mt-14">
+              <IntelDashboard />
+            </div>
+          </div>
+        </section>
+
         {/* Servicios */}
         <section id="servicios" aria-labelledby="servicios-t" className="bg-paper-2">
           <div className="mx-auto max-w-[1200px] px-4 py-20 sm:px-8 md:py-28">
@@ -300,11 +270,14 @@ export default function Home() {
             </div>
             <ul className="mt-14 border-t border-ink/15">
               {services.map((s) => (
-                <li key={s.title} className="grid gap-4 border-b border-ink/15 py-9 md:grid-cols-[1fr_1.4fr] md:gap-16">
-                  <h3 className="text-[24px] font-normal leading-tight tracking-[-0.02em]">{s.title}</h3>
-                  <div className="max-w-[60ch]">
-                    <p className="text-[17px] leading-relaxed">{s.body}</p>
+                <li key={s.title} className="grid items-center gap-10 border-b border-ink/15 py-14 md:grid-cols-[1fr_1.15fr] md:gap-16 md:py-16">
+                  <div className="max-w-[52ch]">
+                    <h3 className="text-[26px] font-normal leading-tight tracking-[-0.02em]">{s.title}</h3>
+                    <p className="mt-4 text-[17px] leading-relaxed">{s.body}</p>
                     {s.limit && <p className="mt-3 text-[15px] leading-relaxed text-ink-3">{s.limit}</p>}
+                  </div>
+                  <div className="px-2 py-4 sm:px-4">
+                    <ServiceVisual kind={s.kind} />
                   </div>
                 </li>
               ))}
@@ -324,69 +297,22 @@ export default function Home() {
           </div>
         </ProcessSteps>
 
-        {/* Paquetes */}
-        <section id="paquetes" aria-labelledby="paquetes-t" className="bg-blue-ink text-white">
-          <div className="mx-auto max-w-[1200px] px-4 py-20 sm:px-8 md:py-28">
-            <div className="grid gap-6 md:grid-cols-[1fr_1.4fr] md:gap-16">
-              <h2 id="paquetes-t" className="text-[clamp(2rem,4vw,3.2rem)] font-light leading-[1.05] tracking-[-0.03em]">
-                Tres paquetes. El diagnóstico decide cuál.
-              </h2>
-              <p className="max-w-[52ch] text-[18px] leading-relaxed text-[#c3cdf5] md:pt-3">
-                Desde un negocio que decide su dueño hasta una empresa con comité y área de sistemas. El precio se cotiza después de la llamada, con el alcance por escrito.
-              </p>
-            </div>
-            <div className="mt-14 grid border-t border-white/20 md:grid-cols-3">
-              {packages.map((p, i) => (
-                <article
-                  key={p.name}
-                  className={`border-b border-white/20 py-9 md:border-b-0 md:py-10 ${i > 0 ? "md:border-l md:pl-10" : ""} ${i < 2 ? "md:pr-10" : ""}`}
-                >
-                  <h3 className="text-[28px] font-light tracking-[-0.02em]">{p.name}</h3>
-                  <p className="mt-2 text-[15px] text-[#a9b6ee]">{p.who}</p>
-                  <p className="mt-8 text-[17px] leading-relaxed">{p.pitch}</p>
-                  <p className="mt-8 text-[14px] text-[#a9b6ee]">
-                    Implementación: <span className="tabular text-white">{p.cycle}</span>
-                  </p>
-                </article>
+        {/* Compromisos */}
+        <section id="compromisos" aria-labelledby="compromisos-t" className="mx-auto max-w-[1200px] px-4 py-20 sm:px-8 md:py-28">
+          <div className="grid gap-6 md:grid-cols-[1fr_1.4fr] md:gap-16">
+            <h2 id="compromisos-t" className="text-[clamp(2rem,4vw,3.2rem)] font-light leading-[1.05] tracking-[-0.03em]">
+              Lo que te decimos antes de firmar
+            </h2>
+            <ul className="space-y-6 md:pt-3">
+              {limits.map((l) => (
+                <li key={l} className="flex gap-4 text-[17px] leading-relaxed">
+                  <svg aria-hidden width="18" height="18" viewBox="0 0 18 18" className="mt-1 shrink-0 text-blue">
+                    <path d="M3 9.5l3.5 3.5L15 4.5" fill="none" stroke="currentColor" strokeWidth="1.6" />
+                  </svg>
+                  <span>{l}</span>
+                </li>
               ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Límites + equipo */}
-        <section id="equipo" aria-labelledby="equipo-t" className="mx-auto max-w-[1200px] px-4 py-20 sm:px-8 md:py-28">
-          <div className="grid gap-16 lg:grid-cols-2 lg:gap-20">
-            <div>
-              <h2 id="equipo-t" className="text-[clamp(2rem,4vw,3.2rem)] font-light leading-[1.05] tracking-[-0.03em]">
-                Dos personas. Atención directa.
-              </h2>
-              <p className="mt-6 max-w-[48ch] text-[18px] leading-relaxed text-ink-2">
-                No somos una agencia grande y no lo fingimos. Hablas con quien diseña el sistema y con quien lleva tu cuenta.
-              </p>
-              <dl className="mt-12 divide-y divide-line border-y border-line">
-                <div className="flex flex-wrap items-baseline justify-between gap-2 py-6">
-                  <dt className="text-[21px] tracking-[-0.015em]">Ricardo</dt>
-                  <dd className="text-[16px] text-ink-2">Implementación y arquitectura</dd>
-                </div>
-                <div className="flex flex-wrap items-baseline justify-between gap-2 py-6">
-                  <dt className="text-[21px] tracking-[-0.015em]">Dann</dt>
-                  <dd className="text-[16px] text-ink-2">Comercial y cuentas</dd>
-                </div>
-              </dl>
-            </div>
-            <div>
-              <h3 className="text-[24px] font-normal tracking-[-0.02em]">Lo que te decimos antes de firmar</h3>
-              <ul className="mt-8 space-y-6">
-                {limits.map((l) => (
-                  <li key={l} className="flex gap-4 text-[17px] leading-relaxed">
-                    <svg aria-hidden width="18" height="18" viewBox="0 0 18 18" className="mt-1 shrink-0 text-blue">
-                      <path d="M3 9.5l3.5 3.5L15 4.5" fill="none" stroke="currentColor" strokeWidth="1.6" />
-                    </svg>
-                    <span>{l}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            </ul>
           </div>
         </section>
 
@@ -416,14 +342,7 @@ export default function Home() {
         </section>
       </main>
 
-      <footer className="border-t border-line">
-        <div className="mx-auto flex max-w-[1200px] flex-col gap-4 px-4 py-10 text-[14px] text-ink-3 sm:flex-row sm:items-center sm:justify-between sm:px-8">
-          <p>
-            <span className="font-semibold text-ink">Dexen</span> · México
-          </p>
-          <p className="tabular">© {new Date().getFullYear()} Dexen Consulting</p>
-        </div>
-      </footer>
+<SiteFooter />
     </>
   );
 }

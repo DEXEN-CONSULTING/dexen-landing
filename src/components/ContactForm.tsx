@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 
 type Status = "idle" | "sending" | "sent" | "error";
@@ -100,7 +101,11 @@ export default function ContactForm() {
             {status === "sending" ? "Enviando…" : "Pedir diagnóstico"}
           </button>
           <p id="form-nota" className="text-[14px] text-ink-3">
-            Sólo usamos tus datos para contestarte.
+            Sólo usamos tus datos para contestarte. Consulta el{" "}
+            <Link href="/privacidad" className="text-ink-2 underline">
+              Aviso de privacidad
+            </Link>
+            .
           </p>
         </div>
       </fieldset>
