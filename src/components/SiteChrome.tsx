@@ -15,7 +15,7 @@ const nav = [
   { href: "/#inteligencia", label: "Inteligencia" },
   { href: "/#casos", label: "Casos" },
   { href: "/#proceso", label: "Proceso" },
-  { href: "/#compromisos", label: "Compromisos" },
+  { href: "/#resenas", label: "Reseñas" },
 ];
 
 export function SiteHeader() {
@@ -59,7 +59,7 @@ const cols = [
     links: [
       { href: "/#inteligencia", l: "Inteligencia operativa" },
       { href: "/#proceso", l: "Cómo trabajamos" },
-      { href: "/#compromisos", l: "Lo que decimos antes de firmar" },
+      { href: "/#resenas", l: "Reseñas" },
       { href: "/#contacto", l: "Contacto" },
     ],
   },

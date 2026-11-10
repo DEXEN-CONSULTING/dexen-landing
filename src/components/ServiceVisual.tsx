@@ -1,6 +1,7 @@
 "use client";
 
 import type { CSSProperties, ReactNode } from "react";
+import { brandFonts } from "./brandFonts";
 import { GEAR_PATH } from "./gear";
 import { useTick } from "./useTick";
 
@@ -187,45 +188,128 @@ function ContentViz() {
   );
 }
 
-/* 2. Agentes: conversación que termina en cita */
-const chat: { from: "c" | "a" | "typing"; t?: string }[] = [
-  { from: "c", t: "Hola, ¿tienen lugar el jueves?" },
+/* 2. Agentes: conversación que termina en cita, con lo que el agente hizo detrás */
+const chat: { from: "c" | "a" | "typing"; t?: string; at?: string }[] = [
+  { from: "c", t: "Hola, ¿tienen lugar el jueves?", at: "10:42" },
   { from: "typing" },
-  { from: "a", t: "Sí. Tengo 11:00 o 16:30. ¿Cuál te acomoda?" },
-  { from: "c", t: "16:30, porfa" },
+  { from: "a", t: "¡Hola, Mariana! Sí. Tengo 11:00 o 16:30 con la Dra. Ruiz. ¿Cuál te acomoda?", at: "10:42" },
+  { from: "c", t: "16:30, porfa", at: "10:43" },
   { from: "typing" },
-  { from: "a", t: "Listo, quedó agendada. Te recuerdo un día antes." },
+  { from: "a", t: "Listo, quedó el jueves 16:30. Te mando la ubicación y te recuerdo un día antes.", at: "10:43" },
 ];
 
+// Qué hizo el agente detrás de cada mensaje (se marca cuando la conversación llega a `at`).
+const actions = [
+  { at: 1, t: "Reconoció a la clienta", d: "Ya estaba en el CRM" },
+  { at: 2, t: "Consultó la agenda", d: "2 huecos el jueves" },
+  { at: 4, t: "Agendó la cita", d: "Jue 16:30 · Dra. Ruiz" },
+  { at: 5, t: "Programó recordatorio", d: "Miércoles 16:30" },
+  { at: 5, t: "Avisó a recepción", d: "Sin intervención humana" },
+];
+
+function BotAvatar() {
+  return (
+    <svg viewBox="0 0 40 40" className="h-9 w-9 shrink-0" aria-hidden>
+      <defs>
+        <linearGradient id="av-bg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="#8faaf6" />
+          <stop offset="1" stopColor="#1d4ff0" />
+        </linearGradient>
+        <clipPath id="av-clip">
+          <circle cx="20" cy="20" r="20" />
+        </clipPath>
+      </defs>
+      <g clipPath="url(#av-clip)">
+        <rect width="40" height="40" fill="url(#av-bg)" />
+        <path d="M6 42c1.5-8 7-12 14-12s12.5 4 14 12z" fill="#0a1f6e" />
+        <path d="M16.5 27h7v4.5a3.5 3.5 0 0 1-7 0z" fill="#e8b996" />
+        <path d="M11.5 19c0-7 3.8-10.5 8.5-10.5s8.5 3.5 8.5 10.5v6.5c-1.5 1-3 1.5-4.5 1.5V17h-8v10c-1.5 0-3-.5-4.5-1.5z" fill="#2a1a12" />
+        <ellipse cx="20" cy="19.5" rx="6" ry="7" fill="#f1c7a5" />
+        <path d="M13.8 17.5c1.5-4 4-5.5 6.2-5.5 2.6 0 5 1.6 6.2 5.2-3.2-.2-7-1.2-9.4-3.4-.8 1.6-1.8 2.8-3 3.7z" fill="#2a1a12" />
+        <circle cx="17.6" cy="20" r=".9" fill="#2a1a12" />
+        <circle cx="22.4" cy="20" r=".9" fill="#2a1a12" />
+        <path d="M18 23.4c1.2.9 2.8.9 4 0" fill="none" stroke="#b5654a" strokeWidth=".9" strokeLinecap="round" />
+      </g>
+    </svg>
+  );
+}
+
 function AgentViz() {
-  const { ref, tick } = useTick(1300, chat.length + 1);
-  const step = tick % (chat.length + 3);
+  const { ref, tick } = useTick(1400, chat.length + 1);
+  const step = tick % (chat.length + 4);
   const shown = chat.slice(0, step + 1).filter((m, i, arr) => m.from !== "typing" || i === arr.length - 1);
+  const typing = shown[shown.length - 1]?.from === "typing";
   const booked = step >= chat.length - 1;
   return (
-    <div ref={ref} className="relative h-[250px]">
-      <Frame title="WhatsApp · agente de Dexen">
-        <ul className="mt-3 flex h-[160px] flex-col justify-end gap-2 overflow-hidden">
-          {shown.map((m, i) =>
-            m.from === "typing" ? (
-              <li key={`t${i}`} className="feed-in flex w-fit gap-1 rounded-lg rounded-bl-sm bg-paper-2 px-3 py-2.5">
-                <span className="typing-dot" />
-                <span className="typing-dot" style={{ animationDelay: ".15s" }} />
-                <span className="typing-dot" style={{ animationDelay: ".3s" }} />
-              </li>
-            ) : (
-              <li
-                key={`m${i}-${m.t}`}
-                className={`feed-in max-w-[80%] rounded-lg px-3 py-2 text-[13px] leading-snug ${
-                  m.from === "c" ? "self-end rounded-br-sm bg-blue text-white" : "rounded-bl-sm bg-paper-2 text-ink"
-                }`}
-              >
-                {m.t}
-              </li>
-            ),
-          )}
-        </ul>
-      </Frame>
+    <div ref={ref} className="relative h-[340px]">
+      <div className="grid h-full overflow-hidden rounded-md border border-line bg-white sm:grid-cols-[1.45fr_1fr]">
+        <div className="flex min-w-0 flex-col">
+          <div className="flex items-center gap-2.5 border-b border-line px-4 py-3">
+            <BotAvatar />
+            <div className="min-w-0 leading-tight">
+              <p className="flex items-center gap-1 truncate text-[13px] font-medium text-ink">
+                Ana · Clínica Sur
+                <svg viewBox="0 0 16 16" className="h-3.5 w-3.5 shrink-0 text-blue" aria-hidden>
+                  <path d="M8 0l2 1.6 2.5-.2.7 2.4 2.1 1.4-.8 2.4.8 2.4-2.1 1.4-.7 2.4-2.5-.2L8 16l-2-1.6-2.5.2-.7-2.4L.7 10.8 1.5 8.4.7 6l2.1-1.4.7-2.4 2.5.2z" fill="currentColor" />
+                  <path d="M5 8.2l2 2 4-4.2" fill="none" stroke="#fff" strokeWidth="1.6" />
+                </svg>
+              </p>
+              <p className="text-[11px] text-ink-3">{typing ? "escribiendo…" : "Asistente de citas · WhatsApp"}</p>
+            </div>
+          </div>
+          <ul className="flex flex-1 flex-col justify-end gap-2 overflow-hidden bg-paper-2/60 px-3 py-3">
+            {shown.map((m, i) =>
+              m.from === "typing" ? (
+                <li key={`t${i}`} className="feed-in flex w-fit gap-1 rounded-lg rounded-bl-sm bg-white px-3 py-2.5 shadow-sm">
+                  <span className="typing-dot" />
+                  <span className="typing-dot" style={{ animationDelay: ".15s" }} />
+                  <span className="typing-dot" style={{ animationDelay: ".3s" }} />
+                </li>
+              ) : (
+                <li
+                  key={`m${i}-${m.t}`}
+                  className={`feed-in max-w-[86%] rounded-lg px-3 py-2 text-[12.5px] leading-snug shadow-sm ${
+                    m.from === "c" ? "self-end rounded-br-sm bg-blue text-white" : "rounded-bl-sm bg-white text-ink"
+                  }`}
+                >
+                  {m.t}
+                  <span className={`ml-2 inline-flex translate-y-0.5 items-center gap-0.5 text-[10px] ${m.from === "c" ? "text-white/70" : "text-ink-3"}`}>
+                    {m.at}
+                    {m.from === "a" && (
+                      <svg viewBox="0 0 18 12" className="h-2.5 w-3.5 text-blue" aria-hidden>
+                        <path d="M1 6.5l3 3L10 2.5M7 9.5l1 0L15 2.5" fill="none" stroke="currentColor" strokeWidth="1.6" />
+                      </svg>
+                    )}
+                  </span>
+                </li>
+              ),
+            )}
+          </ul>
+        </div>
+        <div className="hidden flex-col border-l border-line px-4 py-3 sm:flex">
+          <p className="text-[11px] text-ink-3">Lo que hizo el agente</p>
+          <ol className="mt-3 flex flex-col gap-3">
+            {actions.map((a) => {
+              const done = step >= a.at;
+              return (
+                <li key={a.t} className={`flex gap-2 transition-opacity duration-700 ${done ? "opacity-100" : "opacity-35"}`}>
+                  <span
+                    className={`mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full border transition-colors duration-700 ${
+                      done ? "border-blue bg-blue text-white" : "border-ink/20 bg-white text-transparent"
+                    }`}
+                  >
+                    <Check className="h-2.5 w-2.5" />
+                  </span>
+                  <span className="leading-tight">
+                    <span className="block text-[12px] font-medium text-ink">{a.t}</span>
+                    <span className="block text-[11px] text-ink-3">{a.d}</span>
+                  </span>
+                </li>
+              );
+            })}
+          </ol>
+        </div>
+      </div>
       <Chip className="-right-2 -top-4 sm:-right-5" delay="-0.5s">
         Respondió en 8 s
       </Chip>
@@ -293,59 +377,150 @@ function ErpViz() {
   );
 }
 
-/* 4. Marca: el sistema se arma solo */
+/* 4. Marca: la tipografía se prueba en vivo mientras el sitio se arma */
 const palette = ["#0a1f6e", "#1d4ff0", "#8faaf6", "#e9eefc", "#111214"];
-const weights = [300, 400, 500, 600];
+const BUILD = 6; // bloques del sitio
+
+function Block({ on, className, children }: { on: boolean; className: string; children?: ReactNode }) {
+  return (
+    <div
+      className={`rounded-[3px] border transition-[background-color,border-color,opacity,translate] duration-700 ease-out ${
+        on ? "translate-y-0 border-transparent opacity-100" : "translate-y-1 border-dashed border-ink/20 bg-transparent opacity-60"
+      } ${className}`}
+    >
+      <div className={`h-full transition-opacity duration-700 ${on ? "opacity-100" : "opacity-0"}`}>{children}</div>
+    </div>
+  );
+}
 
 function BrandViz() {
-  const { ref, tick } = useTick(1100, 1);
-  const w = weights[tick % weights.length];
+  const { ref, tick } = useTick(1000, BUILD + 2);
+  const built = tick % (BUILD + 4);
+  const fi = Math.floor(tick / 3) % brandFonts.length;
+  const f = brandFonts[fi];
   const active = tick % palette.length;
   return (
-    <div ref={ref} className="relative h-[250px]">
-      <Frame title="Sistema de diseño">
-        <div className="mt-3 grid grid-cols-[1fr_1.2fr] gap-4">
-          <div className="flex flex-col justify-between rounded-sm bg-paper-2 p-3">
-            <span className="text-[56px] leading-none tracking-[-0.04em] transition-[font-weight] duration-500" style={{ fontWeight: w }}>
-              Aa
-            </span>
-            <span className="tabular text-[11px] text-ink-3">Hanken Grotesk · {w}</span>
+    <div ref={ref} className="relative h-[340px]">
+      <div className="grid h-full gap-3 sm:grid-cols-[1fr_1.35fr]">
+        {/* Especimen tipográfico */}
+        <div className="hidden flex-col rounded-md border border-line p-4 transition-colors duration-700 sm:flex" style={{ background: f.bg }}>
+          <p className="text-[11px] text-ink-3">Tipografía</p>
+          <div className="relative mt-2 flex-1">
+            {brandFonts.map((x, i) => (
+              <div
+                key={x.name}
+                className={`${x.className} absolute inset-0 flex flex-col justify-center transition-[opacity,translate] duration-700 ease-out ${
+                  i === fi ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0"
+                }`}
+                style={{ color: x.accent }}
+              >
+                <span className="text-[64px] leading-none" style={{ fontWeight: x.weight, fontStyle: x.italic ? "italic" : "normal" }}>
+                  Aa
+                </span>
+                <span className="mt-2 text-[22px] leading-tight" style={{ fontWeight: x.weight }}>
+                  Tu marca
+                </span>
+              </div>
+            ))}
           </div>
-          <div className="flex flex-col gap-3">
-            <div className="flex gap-1.5">
-              {palette.map((c, i) => (
-                <span
-                  key={c}
-                  className="h-9 flex-1 rounded-sm border border-ink/10 transition-transform duration-500"
-                  style={{ background: c, transform: i === active ? "translateY(-5px)" : "none" }}
-                />
+          <p className="tabular text-[11px] text-ink-2">
+            {f.name} · {f.style}
+          </p>
+          <div className="mt-3 flex gap-1">
+            {palette.map((c, i) => (
+              <span
+                key={c}
+                className="h-6 flex-1 rounded-sm border border-ink/10 transition-transform duration-500"
+                style={{ background: c, transform: i === active ? "translateY(-4px)" : "none" }}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Sitio en construcción */}
+        <div className="flex flex-col overflow-hidden rounded-md border border-line bg-white">
+          <div className="flex items-center gap-2 border-b border-line bg-paper-2 px-3 py-2">
+            <span aria-hidden className="flex gap-1">
+              <span className="size-1.5 rounded-full bg-ink/20" />
+              <span className="size-1.5 rounded-full bg-ink/20" />
+              <span className="size-1.5 rounded-full bg-ink/20" />
+            </span>
+            <span className="mx-auto rounded bg-white px-2.5 py-0.5 text-[10px] text-ink-3">tumarca.mx</span>
+          </div>
+          <div className="relative h-[2px] bg-paper-2">
+            <div className="h-full bg-blue transition-[width] duration-700 ease-out" style={{ width: `${(Math.min(built, BUILD) / BUILD) * 100}%` }} />
+          </div>
+          <div className="flex flex-1 flex-col gap-2.5 p-3">
+            <Block on={built > 0} className="h-5">
+              <div className="flex h-full items-center justify-between px-1">
+                <span className="flex items-center gap-1">
+                  <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" style={{ color: f.accent }} aria-hidden>
+                    <path d={GEAR_PATH} fill="currentColor" fillRule="evenodd" />
+                  </svg>
+                  <span className="h-1.5 w-8 rounded-full bg-ink/70" />
+                </span>
+                <span className="flex gap-2">
+                  <span className="h-1 w-5 rounded-full bg-ink/25" />
+                  <span className="h-1 w-5 rounded-full bg-ink/25" />
+                  <span className="h-1 w-5 rounded-full bg-ink/25" />
+                </span>
+              </div>
+            </Block>
+            <div className="grid grid-cols-[1.2fr_1fr] gap-2.5">
+              <div className="flex flex-col gap-2">
+                <Block on={built > 1} className="h-[52px]">
+                  <div className="relative h-full">
+                    {brandFonts.map((x, i) => (
+                      <span
+                        key={x.name}
+                        className={`${x.className} absolute inset-0 text-[19px] leading-[1.05] transition-opacity duration-700 ${i === fi ? "opacity-100" : "opacity-0"}`}
+                        style={{ color: x.accent, fontWeight: x.weight, fontStyle: x.italic ? "italic" : "normal" }}
+                      >
+                        Hecho a tu medida
+                      </span>
+                    ))}
+                  </div>
+                </Block>
+                <Block on={built > 2} className="h-6">
+                  <div className="flex h-full flex-col justify-center gap-1">
+                    <span className="h-1 w-full rounded-full bg-ink/20" />
+                    <span className="h-1 w-3/4 rounded-full bg-ink/20" />
+                  </div>
+                </Block>
+                <Block on={built > 3} className="h-6">
+                  <div className="flex h-full items-center gap-1.5">
+                    <span className="h-full w-16 rounded-[3px] transition-colors duration-700" style={{ background: f.accent }} />
+                    <span className="h-full w-12 rounded-[3px] border border-ink/25" />
+                  </div>
+                </Block>
+              </div>
+              <Block on={built > 4} className="h-full min-h-[96px]">
+                <div className="h-full rounded-[3px] transition-[background] duration-700" style={{ background: `linear-gradient(140deg, ${f.bg}, ${f.accent})` }} />
+              </Block>
+            </div>
+            <div className="grid grid-cols-3 gap-2">
+              {[0, 1, 2].map((i) => (
+                <Block key={i} on={built > 5} className="h-[54px]">
+                  <div className="flex h-full flex-col gap-1 rounded-[3px] bg-paper-2 p-1.5">
+                    <span className="h-5 rounded-sm transition-colors duration-700" style={{ background: i === 1 ? f.accent : f.bg }} />
+                    <span className="h-1 w-3/4 rounded-full bg-ink/25" />
+                    <span className="h-1 w-1/2 rounded-full bg-ink/15" />
+                  </div>
+                </Block>
               ))}
             </div>
-            <div className="flex items-center gap-2">
-              <span className="bg-blue px-3 py-1.5 text-[11px] font-medium text-white">Botón</span>
-              <span className="border border-blue/40 px-3 py-1.5 text-[11px] font-medium text-blue">Secundario</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <svg viewBox="0 0 24 24" className="spin-slow h-7 w-7 text-blue" aria-hidden>
-                <path d={GEAR_PATH} fill="currentColor" fillRule="evenodd" />
-              </svg>
-              <span className="text-[13px] font-semibold tracking-[-0.02em]">Tu marca</span>
-            </div>
           </div>
         </div>
-        <div className="mt-4 grid grid-cols-3 gap-1.5">
-          {["Web", "App", "Redes"].map((s, i) => (
-            <span
-              key={s}
-              className={`rounded-sm py-1 text-center text-[11px] transition-colors duration-500 ${
-                tick % 3 === i ? "bg-blue text-white" : "bg-paper-2 text-ink-3"
-              }`}
-            >
-              {s}
-            </span>
-          ))}
-        </div>
-      </Frame>
+      </div>
+      <Chip className="-right-2 -top-4 sm:-right-5" delay="-1s">
+        {built >= BUILD ? (
+          <>
+            <Check className="text-blue" /> Sitio listo
+          </>
+        ) : (
+          <>Construyendo · {Math.min(built, BUILD)}/{BUILD}</>
+        )}
+      </Chip>
       <Chip className="-bottom-4 left-4" delay="-2.4s">
         <Check className="text-blue" /> Una sola empresa en todos lados
       </Chip>

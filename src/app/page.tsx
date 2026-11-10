@@ -1,5 +1,6 @@
 import Image from "next/image";
 import type { ReactNode } from "react";
+import Testimonials from "@/components/Testimonials";
 import CaseStudies from "@/components/CaseStudies";
 import ContactForm from "@/components/ContactForm";
 import GearBackdrop from "@/components/GearBackdrop";
@@ -91,13 +92,6 @@ const services: Service[] = [
     body: "Identidad y sistema de diseño para que todo lo anterior se vea como una sola empresa.",
     limit: null,
   },
-];
-
-const limits = [
-  "No tocamos tu producción sin staging, respaldo verificado y una ventana acordada.",
-  "Los riesgos se dicen antes de firmar: tokens que caducan, ventanas de Meta y lo que cada servicio no incluye.",
-  "Atendemos pocos clientes a la vez. Si no hay cupo, te lo decimos.",
-  "Sólo ofrecemos lo que ya construimos y opera hoy en producción.",
 ];
 
 function Arrow() {
@@ -279,7 +273,7 @@ export default function Home() {
               Casos de estudio
             </h2>
             <p className="max-w-[52ch] text-[18px] leading-relaxed text-ink-2 md:pt-3">
-              Sitios que hicimos y que hoy están en línea. Las capturas son de los sitios reales.
+              Proyectos que hicimos y que hoy están en uso. Las capturas de los sitios y de Instagram son reales; los paneles de Pensión+ son recreaciones con datos de ejemplo.
             </p>
           </div>
           <CaseStudies />
@@ -297,23 +291,12 @@ export default function Home() {
           </div>
         </ProcessSteps>
 
-        {/* Compromisos */}
-        <section id="compromisos" aria-labelledby="compromisos-t" className="mx-auto max-w-[1200px] px-4 py-20 sm:px-8 md:py-28">
-          <div className="grid gap-6 md:grid-cols-[1fr_1.4fr] md:gap-16">
-            <h2 id="compromisos-t" className="text-[clamp(2rem,4vw,3.2rem)] font-light leading-[1.05] tracking-[-0.03em]">
-              Lo que te decimos antes de firmar
-            </h2>
-            <ul className="space-y-6 md:pt-3">
-              {limits.map((l) => (
-                <li key={l} className="flex gap-4 text-[17px] leading-relaxed">
-                  <svg aria-hidden width="18" height="18" viewBox="0 0 18 18" className="mt-1 shrink-0 text-blue">
-                    <path d="M3 9.5l3.5 3.5L15 4.5" fill="none" stroke="currentColor" strokeWidth="1.6" />
-                  </svg>
-                  <span>{l}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
+        {/* Reseñas */}
+        <section id="resenas" aria-labelledby="resenas-t" className="mx-auto max-w-[1200px] px-4 py-20 sm:px-8 md:py-28">
+          <h2 id="resenas-t" className="max-w-[20ch] text-[clamp(2rem,4vw,3.2rem)] font-light leading-[1.05] tracking-[-0.03em]">
+            Lo que dicen quienes ya trabajan con nosotros
+          </h2>
+          <Testimonials />
         </section>
 
         {/* Contacto */}

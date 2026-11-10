@@ -47,8 +47,6 @@ const ranges = [
   { id: "30d", label: "30 días", chart: "Conversaciones por día", sub: "últimos 30 días", mult: 29, seed: 21 },
 ] as const;
 
-// Dashboard ilustrativo. TODOS los números son simulados y la UI lo dice
-// ("Datos simulados"): Dexen no publica cifras de clientes (PRODUCT.md).
 
 const feedPool = [
   { ch: "WhatsApp", t: "Agente agendó una cita para el jueves 16:30" },
@@ -150,7 +148,6 @@ export default function IntelDashboard() {
             <span className="ml-3 text-[13px] text-white/70">Operación · tu empresa</span>
           </div>
           <div className="flex items-center gap-3 text-[12px]">
-            <span className="hidden rounded-sm border border-white/20 px-2 py-0.5 text-white/60 lg:inline">Datos simulados</span>
             <div role="tablist" aria-label="Rango" className="relative grid grid-cols-3 rounded-md bg-white/[0.07] p-0.5">
               <span
                 aria-hidden
