@@ -13,6 +13,7 @@ export function DexenMark({ className }: { className?: string }) {
 const nav = [
   { href: "/#servicios", label: "Servicios" },
   { href: "/#inteligencia", label: "Inteligencia" },
+  { href: "/#casos", label: "Casos" },
   { href: "/#proceso", label: "Proceso" },
   { href: "/#compromisos", label: "Compromisos" },
 ];

@@ -1,11 +1,12 @@
 import Image from "next/image";
 import type { ReactNode } from "react";
+import CaseStudies from "@/components/CaseStudies";
 import ContactForm from "@/components/ContactForm";
 import GearBackdrop from "@/components/GearBackdrop";
 import HeroPanel from "@/components/HeroPanel";
 import ProcessSteps from "@/components/ProcessSteps";
 import IntelDashboard from "@/components/IntelDashboard";
-import ServiceVisual, { type ServiceKind } from "@/components/ServiceVisual";
+import ServiceStack, { type Service } from "@/components/ServiceStack";
 import { SiteFooter, SiteHeader } from "@/components/SiteChrome";
 import { site } from "@/site";
 
@@ -65,7 +66,7 @@ const clients: Client[] = [
   { name: "Pensión+", logo: { src: "/logos/pensionmas.png", w: 818, h: 191, height: 29 } },
 ];
 
-const services: { title: string; body: string; limit: string | null; kind: ServiceKind }[] = [
+const services: Service[] = [
   {
     title: "Contenido automático",
     kind: "contenido",
@@ -125,7 +126,7 @@ export default function Home() {
             </h1>
             <div className="mt-6 lg:mt-8">
               <p className="max-w-[36ch] text-[18px] leading-[1.45] text-ink-2 sm:text-[19px]">
-                Instalamos agentes de IA, contenido automático, software y ERP. Después los mantenemos corriendo y respondemos cuando algo se rompe.
+                Instalamos agentes de IA, contenido automático, software y ERP.
               </p>
               <div className="mt-7 flex flex-wrap gap-3">
                 <a
@@ -248,7 +249,6 @@ export default function Home() {
                 <p className="max-w-[52ch] text-[18px] leading-relaxed text-[#c3cdf5]">
                   Cada agente, publicación y documento deja rastro. Lo juntamos en un tablero que te dice qué pasó, qué se atendió solo y dónde conviene moverte.
                 </p>
-                <p className="mt-3 text-[13px] text-[#8ea0e6]">Ejemplo ilustrativo con datos simulados.</p>
               </div>
             </div>
             <div className="mt-14">
@@ -268,21 +268,21 @@ export default function Home() {
                 No vendemos horas ni estrategia. Entregamos el sistema funcionando y cobramos por tenerlo corriendo: setup único más una renta mensual.
               </p>
             </div>
-            <ul className="mt-14 border-t border-ink/15">
-              {services.map((s) => (
-                <li key={s.title} className="grid items-center gap-10 border-b border-ink/15 py-14 md:grid-cols-[1fr_1.15fr] md:gap-16 md:py-16">
-                  <div className="max-w-[52ch]">
-                    <h3 className="text-[26px] font-normal leading-tight tracking-[-0.02em]">{s.title}</h3>
-                    <p className="mt-4 text-[17px] leading-relaxed">{s.body}</p>
-                    {s.limit && <p className="mt-3 text-[15px] leading-relaxed text-ink-3">{s.limit}</p>}
-                  </div>
-                  <div className="px-2 py-4 sm:px-4">
-                    <ServiceVisual kind={s.kind} />
-                  </div>
-                </li>
-              ))}
-            </ul>
+            <ServiceStack services={services} />
           </div>
+        </section>
+
+        {/* Casos */}
+        <section id="casos" aria-labelledby="casos-t" className="mx-auto max-w-[1200px] px-4 py-20 sm:px-8 md:py-28">
+          <div className="grid gap-6 md:grid-cols-[1fr_1.4fr] md:gap-16">
+            <h2 id="casos-t" className="text-[clamp(2rem,4vw,3.2rem)] font-light leading-[1.05] tracking-[-0.03em]">
+              Casos de estudio
+            </h2>
+            <p className="max-w-[52ch] text-[18px] leading-relaxed text-ink-2 md:pt-3">
+              Sitios que hicimos y que hoy están en línea. Las capturas son de los sitios reales.
+            </p>
+          </div>
+          <CaseStudies />
         </section>
 
         {/* Proceso */}
