@@ -1,3 +1,4 @@
+import { showReviews } from "./Testimonials";
 import Link from "next/link";
 import { GEAR_PATH } from "./gear";
 import { site } from "@/site";
@@ -15,7 +16,7 @@ const nav = [
   { href: "/#inteligencia", label: "Inteligencia" },
   { href: "/#casos", label: "Casos" },
   { href: "/#proceso", label: "Proceso" },
-  { href: "/#resenas", label: "Reseñas" },
+  ...(showReviews ? [{ href: "/#resenas", label: "Reseñas" }] : []),
 ];
 
 export function SiteHeader() {
@@ -48,7 +49,7 @@ const cols = [
   {
     t: "Servicios",
     links: [
-      { href: "/#servicios", l: "Contenido automático" },
+      { href: "/#servicios", l: "Contenido automático y Ads" },
       { href: "/#servicios", l: "Agentes de IA y automatización" },
       { href: "/#servicios", l: "Software, web y ERP" },
       { href: "/#servicios", l: "Marca y desarrollo creativo" },
@@ -59,7 +60,7 @@ const cols = [
     links: [
       { href: "/#inteligencia", l: "Inteligencia operativa" },
       { href: "/#proceso", l: "Cómo trabajamos" },
-      { href: "/#resenas", l: "Reseñas" },
+      ...(showReviews ? [{ href: "/#resenas", l: "Reseñas" }] : []),
       { href: "/#contacto", l: "Contacto" },
     ],
   },

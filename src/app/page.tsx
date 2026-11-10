@@ -1,6 +1,6 @@
 import Image from "next/image";
 import type { ReactNode } from "react";
-import Testimonials from "@/components/Testimonials";
+import Testimonials, { showReviews } from "@/components/Testimonials";
 import CaseStudies from "@/components/CaseStudies";
 import ContactForm from "@/components/ContactForm";
 import GearBackdrop from "@/components/GearBackdrop";
@@ -69,7 +69,7 @@ const clients: Client[] = [
 
 const services: Service[] = [
   {
-    title: "Contenido automático",
+    title: "Contenido automático y Ads",
     kind: "contenido",
     body: "Publicación en redes y blog que sale todos los días sin que nadie de tu equipo la empuje.",
     limit: null,
@@ -78,7 +78,7 @@ const services: Service[] = [
     title: "Agentes de IA y automatización",
     kind: "agentes",
     body: "IA que contesta, agenda, cotiza y da seguimiento por WhatsApp, Instagram, web, voz y correo.",
-    limit: "No cierra ventas complejas ni sustituye a tu vendedor: filtra, responde lo repetitivo y te entrega el lead caliente.",
+    limit: null,
   },
   {
     title: "Software, web y ERP",
@@ -291,13 +291,15 @@ export default function Home() {
           </div>
         </ProcessSteps>
 
-        {/* Reseñas */}
+        {/* Reseñas: en producción solo aparece con citas aprobadas por el cliente */}
+        {showReviews && (
         <section id="resenas" aria-labelledby="resenas-t" className="mx-auto max-w-[1200px] px-4 py-20 sm:px-8 md:py-28">
           <h2 id="resenas-t" className="max-w-[20ch] text-[clamp(2rem,4vw,3.2rem)] font-light leading-[1.05] tracking-[-0.03em]">
             Lo que dicen quienes ya trabajan con nosotros
           </h2>
           <Testimonials />
         </section>
+        )}
 
         {/* Contacto */}
         <section id="contacto" aria-labelledby="contacto-t" className="border-t border-line bg-paper-2">

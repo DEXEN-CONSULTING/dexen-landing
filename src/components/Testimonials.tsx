@@ -12,6 +12,9 @@ const reviews: Review[] = [
 
 const isDev = process.env.NODE_ENV !== "production";
 
+// En producción la sección y sus links (nav y footer) solo existen si hay al menos una cita real.
+export const showReviews = isDev || reviews.some((r) => r.quote);
+
 function initials(s: string) {
   return s
     .split(/\s+/)

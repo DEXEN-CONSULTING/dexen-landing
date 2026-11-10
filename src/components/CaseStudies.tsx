@@ -42,7 +42,7 @@ const cases: Case[] = [
     name: "Heredabienes",
     domain: "heredabienes.com.mx",
     sector: "Escrituración y sucesiones",
-    work: "Sitio web",
+    work: "Sitio web y CRM",
     body: "Regularización de propiedades, sucesiones y escrituración en Jalisco.",
   },
   {
@@ -50,7 +50,7 @@ const cases: Case[] = [
     name: "Daisies",
     domain: "daisies.mx",
     sector: "Salud digital",
-    work: "Branding y desarrollo web",
+    work: "Branding, desarrollo web y chatbot",
     body: "Marca y sitio de una clínica digital: una membresía que reúne ginecología, nutrición, psicología y más especialidades.",
   },
 ];

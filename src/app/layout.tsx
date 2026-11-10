@@ -75,7 +75,7 @@ const jsonLd = {
         "@type": "OfferCatalog",
         name: "Servicios",
         itemListElement: [
-          ["Contenido automático", "Publicación en redes y blog que sale todos los días sin que nadie de tu equipo la empuje."],
+          ["Contenido automático y Ads", "Publicación en redes y blog que sale todos los días sin que nadie de tu equipo la empuje."],
           ["Agentes de IA y automatización", "IA que contesta, agenda, cotiza y da seguimiento por WhatsApp, Instagram, web, voz y correo."],
           ["Software, web y ERP", "Sitios, portales, apps e implementación de Odoo por fases, con soporte después de salir a producción."],
           ["Marca y desarrollo creativo", "Identidad y sistema de diseño para que todo lo anterior se vea como una sola empresa."],
