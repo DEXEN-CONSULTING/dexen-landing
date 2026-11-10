@@ -273,7 +273,7 @@ export default function Home() {
               Casos de estudio
             </h2>
             <p className="max-w-[52ch] text-[18px] leading-relaxed text-ink-2 md:pt-3">
-              Proyectos que hicimos y que hoy están en uso. Las capturas de los sitios y de Instagram son reales; los paneles de Pensión+ son recreaciones con datos de ejemplo.
+              Proyectos que hicimos y que hoy están en uso. Las capturas de los sitios y de Instagram son reales.
             </p>
           </div>
           <CaseStudies />
