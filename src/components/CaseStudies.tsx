@@ -107,15 +107,15 @@ function CaseCard({ c, featured }: { c: Case; featured: boolean }) {
     <li className={featured ? "md:col-span-2" : undefined}>
       <figure className="group">
         {c.slug === "pensionmas" ? (
-          <div className="grid items-start gap-6 lg:grid-cols-[1.15fr_1fr]">
+          <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">
             <Shots c={c} featured={featured} />
-            <div className="flex flex-col gap-4">
+            <div className="flex min-w-0 flex-col gap-4">
               <PensionDashboard />
               <PensionFlow />
             </div>
           </div>
         ) : c.slug === "melaque" ? (
-          <div className="grid grid-cols-[1fr_auto] items-end gap-4">
+          <div className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-4">
             <Shots c={c} featured={featured} />
             <div className="w-[34vw] max-w-[170px] overflow-hidden rounded-[18px] border-[5px] border-ink bg-white shadow-[0_20px_40px_-20px_rgba(10,31,110,0.6)] md:w-[150px]">
               <div className="relative aspect-[780/853]">
@@ -150,7 +150,7 @@ function CaseCard({ c, featured }: { c: Case; featured: boolean }) {
 
 export default function CaseStudies() {
   return (
-    <ul className="mt-14 grid gap-x-10 gap-y-16 md:grid-cols-2">
+    <ul className="mt-14 grid grid-cols-1 gap-x-10 gap-y-16 md:grid-cols-2">
       {cases.map((c, i) => (
         <CaseCard key={c.slug} c={c} featured={i === 0} />
       ))}

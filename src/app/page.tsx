@@ -199,7 +199,7 @@ export default function Home() {
               </ul>
             </div>
             {/* Escritorio: fila estática. */}
-            <ul className="mt-5 hidden items-center justify-between gap-x-8 lg:flex">
+            <ul className="mt-5 hidden items-center justify-between gap-x-4 lg:flex xl:gap-x-8">
               {clients.map((c) => (
                     <li key={c.name} className="flex h-12 shrink-0 items-center">
                       {c.lockup ? (
