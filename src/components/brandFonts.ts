@@ -2,10 +2,12 @@ import { Bebas_Neue, Caveat, Fraunces, Space_Mono } from "next/font/google";
 
 // Sólo para el demo de "Marca y desarrollo creativo". preload:false para no
 // meterle peso al primer render: se bajan cuando la tarjeta ya está en pantalla.
-const fraunces = Fraunces({ subsets: ["latin"], weight: ["400", "600"], style: ["normal", "italic"], display: "swap", preload: false });
+// Cada fuente va con una sola entrada (un weight, un style): el cargador de
+// fuentes de Vercel falla con "queries have exactly one entry" si son listas.
+const fraunces = Fraunces({ subsets: ["latin"], weight: "600", style: "italic", display: "swap", preload: false });
 const bebas = Bebas_Neue({ subsets: ["latin"], weight: "400", display: "swap", preload: false });
-const caveat = Caveat({ subsets: ["latin"], weight: ["500", "700"], display: "swap", preload: false });
-const mono = Space_Mono({ subsets: ["latin"], weight: ["400", "700"], display: "swap", preload: false });
+const caveat = Caveat({ subsets: ["latin"], weight: "700", display: "swap", preload: false });
+const mono = Space_Mono({ subsets: ["latin"], weight: "700", display: "swap", preload: false });
 
 export const brandFonts = [
   { name: "Fraunces", style: "Serif editorial", className: fraunces.className, weight: 600, italic: true, accent: "#0a1f6e", bg: "#f4efe6" },
